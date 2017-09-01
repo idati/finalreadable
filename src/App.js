@@ -131,6 +131,14 @@ const data = [
                   // <MuiDataTable config={config} />
                   // </MuiThemeProvider>
 
+
+  // <ReactTable
+  //   defaultPageSize={10}
+  //   minRows={3}
+  //   data={data2}
+  //   columns={columns}
+  //   />
+
   };
   console.log(config)
 
@@ -143,6 +151,7 @@ const data = [
     data={data2}
     columns={columns}
     />
+
       </div>
     );
   }
@@ -170,7 +179,7 @@ function mapStateToProps(state) {
     categories,
     posts,
     fposts: sortable.sort(function(a, b) {return a[3] - b[3]}),
-    defaul: defa//posts['6ni6ok3ym7mf1p33lnez']
+    defaul: defa.react//posts['6ni6ok3ym7mf1p33lnez']
 //[5,4,3].sort(function(a, b) {return a - b})
   }
 }

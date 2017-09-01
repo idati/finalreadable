@@ -31,7 +31,8 @@ const logger = store => next => action => {
 
 const store = createStore(reducer,
   composeEnhancers(
-    applyMiddleware(logger, thunk, middleware)
+    // applyMiddleware(logger, thunk, middleware)
+    applyMiddleware(logger, thunk)
   ))
 
 ReactDOM.render(
