@@ -11,8 +11,12 @@ import reducer from './reducer'
 import {BrowserRouter, Route, Link, Switch} from 'react-router-dom'
 // import CategoryView from './components/CategoryView'
 import { Table, reducer as tableReducer, middleware } from 'redux-data-table';
- 
 
+// import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
+// import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
+// import "../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.js"
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -42,6 +46,5 @@ ReactDOM.render(
       <App />
     </BrowserRouter>
   </Provider>
-
   , document.getElementById('root'));
 registerServiceWorker();

@@ -15,12 +15,92 @@ import ReactTable from 'react-table'
 // import { TableContainer, Table } from 'react-custom-table';
 import 'react-table/react-table.css'
 
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
+// import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
+// import "../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.js"
 
-class App extends Component {
-   
+
+
+
+const products = [];
+
+function addProducts(quantity) {
+  const startId = products.length;
+  for (let i = 0; i < quantity; i++) {
+    const id = startId + i;
+    products.push({
+      id: id,
+      name: 'Item name ' + id,
+      price: 2100 + i
+    });
+  }
+}
+
+addProducts(5);
+
+//--------Advanced Code-----------------
+function onRowSelect(row, isSelected) {
+  console.log(row);
+  console.log(`selected: ${isSelected}`);
+}
+
+function onSelectAll(isSelected) {
+  console.log(`is select all: ${isSelected}`);
+}
+
+function onAfterSaveCell(row, cellName, cellValue) {
+  console.log(`Save cell ${cellName} with value ${cellValue}`);
+  console.log('The whole row :');
+  console.log(row);
+}
+
+function onAfterTableComplete() {
+  console.log('Table render complete.');
+}
+
+function onAfterDeleteRow(rowKeys) {
+  console.log('onAfterDeleteRow');
+  console.log(rowKeys);
+}
+
+function onAfterInsertRow(row) {
+  console.log('onAfterInsertRow');
+  console.log(row);
+}
+
+const selectRowProp = {
+  mode: 'checkbox',
+  clickToSelect: true,
+  selected: [], // default select on table
+  bgColor: 'rgb(238, 193, 213)',
+  onSelect: onRowSelect,
+  onSelectAll: onSelectAll
+};
+
+const options = {
+  paginationShowsTotal: true,
+  sortName: 'title',  // default sort column name
+  sortOrder: 'desc',  // default sort order
+  afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
+  afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
+  afterInsertRow: onAfterInsertRow   // A hook for after insert rows
+};
+
+function nameValidator(value) {
+  if (!value) {
+    return 'Job Name is required!';
+  } else if (value.length < 3) {
+    return 'Job Name length must great 3 char';
+  }
+  return true;
+}
+export class App extends Component {
+
   componentDidMount() {
     this.props.dispatch(getAllCategory())
     this.props.dispatch(getAllPosts())
+    // For Testing
+    // api.newPost('6ni6ok3ym7mf1p33lneÖ', Date.now(), 'Learn Redux in 15 minutes!', 'Just kidding. It takes more than 100 minutes to learn technology.', 'thingthree', 'react')
   }
 
 
@@ -139,21 +219,36 @@ const data = [
   //   columns={columns}
   //   />
 
+
+  //   <BootstrapTable data={data2} versin='4'>
+  //     <TableHeaderColumn isKey dataField='timestamp'>Timestamp</TableHeaderColumn>
+  //     <TableHeaderColumn dataField='title'>Title</TableHeaderColumn>
+  //     <TableHeaderColumn dataField='voteScore'>Vote Score</TableHeaderColumn>
+  // </BootstrapTable>
+
+
+    //   <BootstrapTable data={data2}>
+    //   <TableHeaderColumn isKey dataField='timestamp'>Timestamp</TableHeaderColumn>
+    // </BootstrapTable>
+
   };
   console.log(config)
+  // var bootstrap_enabled = (typeof $().modal == 'function')
+  // console.log(bootstrap_enabled)
 
+
+  // cleanSort = () => {
+  //   this.refs.table.cleanSort();
+  // }
     return (
       <div>
-
-  <ReactTable
-    defaultPageSize={10}
-    minRows={3}
-    data={data2}
-    columns={columns}
-    />
-
+      <BootstrapTable data={data2} selectRow={ selectRowProp } options={ options } search columnFilter hover pagination>
+        <TableHeaderColumn dataField='timestamp' dataSort isKey >Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='title' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='voteScore' dataSort>Vote Score</TableHeaderColumn>
+      </BootstrapTable>
       </div>
-    );
+      )
   }
 }
 
