@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import {render} from 'react-dom'
 import './App.css';
 import { connect } from 'react-redux';
 import {Switch, Route, withRouter, Link} from 'react-router-dom';
@@ -158,22 +159,23 @@ const data = [
   // { title: 'Elekun Bayo', timestamp: 21, voteScore: 'Zamfara'}
 ];
 
-    const {categories, posts, fposts, defaul} = this.props
+    const {categories, posts, defaul} = this.props
     console.log(api.fetchAllCategories())
     console.log(api.getPosts())
     console.log(this)
     console.log(data)
     
-    const data2=defaul
-    console.log(data2)
+    const data2=defaul.react
+    const data3=defaul
+    console.log(data3)
     // console.log('data',data.react)
-
+    console.log(defaul)
     const config = {
     paginated: false,
     search: 'title',   
-    data: data2,
+    data: data3,
     columns: [
-      { property: 'title', title: 'title'},
+      { property: 'id', title: 'id'},
       { property: 'timestamp', title: 'timestamp'},
       { property: 'voteScore', title: 'voteScore' }
       // { property: 'age', title: 'Age' },
@@ -240,13 +242,34 @@ const data = [
   // cleanSort = () => {
   //   this.refs.table.cleanSort();
   // }
+
+      // <div>
+      // <BootstrapTable data={data2} selectRow={ selectRowProp } options={ options } search columnFilter hover pagination>
+      //   <TableHeaderColumn dataField='timestamp' dataSort isKey >Timestamp</TableHeaderColumn>
+      //   <TableHeaderColumn dataField='title' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
+      //   <TableHeaderColumn dataField='voteScore' dataSort>Vote Score</TableHeaderColumn>
+      // </BootstrapTable>
+      // </div>
+      // <h1>Welcome to React</h1>
+        const options = {
+      firstPage: 'First Page'
+     };
     return (
-      <div>
-      <BootstrapTable data={data2} selectRow={ selectRowProp } options={ options } search columnFilter hover pagination>
-        <TableHeaderColumn dataField='timestamp' dataSort isKey >Timestamp</TableHeaderColumn>
+      <div key={Date.now()}>
+      {Object.keys(data3).map((e)=>{
+      return(
+      <div className="container" key={Date.now()}><h1>{e}</h1>
+      <BootstrapTable data={data3[e]} selectRow={ selectRowProp } options={ options } search columnFilter hover pagination >
+        <TableHeaderColumn dataField='id' dataSort isKey >Id</TableHeaderColumn>
         <TableHeaderColumn dataField='title' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='body' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Body</TableHeaderColumn>
+        <TableHeaderColumn dataField='author' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Author</TableHeaderColumn>
         <TableHeaderColumn dataField='voteScore' dataSort>Vote Score</TableHeaderColumn>
-      </BootstrapTable>
+        <TableHeaderColumn dataField='timestamp' dataSort>Timestamp</TableHeaderColumn>
+      </BootstrapTable><hr width="75%"/>
+      </div>
+      )
+      })}
       </div>
       )
   }
@@ -257,15 +280,24 @@ function mapStateToProps(state) {
   var defa = {}
   for(var c in categories){
     defa[c]=[]
+    console.log('Here are the posts',posts)
     for(var i in posts){
       // console.log(c, posts[i][3])
-      if(c==posts[i][3]){
-        defa[c].push({title:posts[i][0],timestamp:posts[i][1],voteScore:posts[i][2]})
-      }
+      if(c==posts[i][6]){
+        defa[c].push({
+          id:posts[i][0], 
+          timestamp:posts[i][1],
+          title:posts[i][2],
+          body:posts[i][3],
+          author:posts[i][4], 
+          voteScore:posts[i][5], 
+          category:posts[i][6]
+      })
       // console.log(defa)
     }
   }
-  
+  }
+  console.log(defa)
   var sortable=[]
   for(var p in posts){
     sortable.push([p, posts[p][0], posts[p][1], posts[p][2], posts[p][3]])
@@ -273,8 +305,9 @@ function mapStateToProps(state) {
   return {
     categories,
     posts,
-    fposts: sortable.sort(function(a, b) {return a[3] - b[3]}),
-    defaul: defa.react//posts['6ni6ok3ym7mf1p33lnez']
+    // fposts: sortable.sort(function(a, b) {return a[3] - b[3]}),
+    // defaul: defa.react//posts['6ni6ok3ym7mf1p33lnez']
+    defaul: defa
 //[5,4,3].sort(function(a, b) {return a - b})
   }
 }

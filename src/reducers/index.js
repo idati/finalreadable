@@ -17,7 +17,15 @@ export function posts(state = {}, action){
     case GET_ALL_POSTS:
       console.log('posts', action)
       return action.posts.reduce((posts, post) => {
-        posts[post.id] = [post.title, post.timestamp, post.voteScore, post.category] 
+        posts[post.id] = [
+                            post.id, 
+                            post.timestamp,
+                            post.title,
+                            post.body,
+                            post.author, 
+                            post.voteScore, 
+                            post.category
+                          ] 
         return posts
       }, {})
     default:
