@@ -24,7 +24,8 @@ export function posts(state = {}, action){
                             post.body,
                             post.author, 
                             post.voteScore, 
-                            post.category
+                            post.category,
+                            post.deleted
                           ] 
         return posts
       }, {})

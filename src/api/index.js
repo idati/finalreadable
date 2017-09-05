@@ -38,3 +38,35 @@ export const newPost = (id, timestamp, title, body, author, category) =>
       // categories: JSON.stringify(author)
     }).then(res=>res.json())
       .then(res=>console.log(res))
+
+
+
+export const getAllCommentsFromPost = (id) =>
+  fetch(`${api}/posts/${id}/comments/`, {headers})
+  .then(res => res.json())
+  .then( value => { return value })
+  
+
+export const deletePost = (id) =>
+    fetch(`${api}/posts/${id}`,{
+    method:'DELETE',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+            // id: JSON.stringify(id),
+            // timestamp: JSON.stringify(timestamp),
+            // title: JSON.stringify(title),
+    deleted: JSON.stringify(true),
+            // author: JSON.stringify(author),
+            // categories: JSON.stringify(author)
+  }).then(getAllCommentsFromPost(id).then(
+    value =>{
+    for(let j=0; j<value.length; j++){
+        value[j].parentDeleted=true
+    }
+    console.log(value)
+  }
+  ))//.map((res) => res.parentDeleted: true))
+    .then(res=>res.json())
+    .then(res=>console.log(res))

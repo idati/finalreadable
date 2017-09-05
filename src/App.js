@@ -16,11 +16,13 @@ import ReactTable from 'react-table'
 // import { TableContainer, Table } from 'react-custom-table';
 import 'react-table/react-table.css'
 
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
+import {BootstrapTable, TableHeaderColumn, ButtonGroup} from 'react-bootstrap-table'
 // import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
 // import "../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.js"
-
-
+// import * as DataStore from '../node_modules/react-bootstrap-table/lib/store/TableDataStore'
+// function BootstrapTable(){
+//   return this.props
+// }
 
 
 const products = [];
@@ -41,7 +43,7 @@ addProducts(5);
 
 //--------Advanced Code-----------------
 function onRowSelect(row, isSelected) {
-  console.log(row);
+  console.log(row.id);
   console.log(`selected: ${isSelected}`);
 }
 
@@ -61,12 +63,20 @@ function onAfterTableComplete() {
 
 function onAfterDeleteRow(rowKeys) {
   console.log('onAfterDeleteRow');
-  console.log(rowKeys);
+  console.log('deletet',rowKeys);
+  // api.deletePost("8xf0y6ziyjabvozdd253nd")
+  for (var i in rowKeys){
+      console.log(rowKeys[i])
+      api.deletePost(rowKeys[i])
+  }
 }
 
 function onAfterInsertRow(row) {
+  //id, timestamp, title, body, author, category) 
   console.log('onAfterInsertRow');
   console.log(row);
+  console.log(row.id);
+  // api.newPost(row.id, timestamp, title, body, author, category)
 }
 
 const selectRowProp = {
@@ -78,14 +88,14 @@ const selectRowProp = {
   onSelectAll: onSelectAll
 };
 
-const options = {
-  paginationShowsTotal: true,
-  sortName: 'title',  // default sort column name
-  sortOrder: 'desc',  // default sort order
-  afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
-  afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
-  afterInsertRow: onAfterInsertRow   // A hook for after insert rows
-};
+// const options = {
+//   paginationShowsTotal: true,
+//   sortName: 'title',  // default sort column name
+//   sortOrder: 'desc',  // default sort order
+//   afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
+//   afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
+//   afterInsertRow: onAfterInsertRow   // A hook for after insert rows
+// };
 
 function nameValidator(value) {
   if (!value) {
@@ -116,9 +126,42 @@ export class App extends Component {
           //   return(<p key={index2}>{posts[key2][3]}</p>)
           // })}
 
+ 
+    createCustomButtonGroup = props => {
+    return (
+      <ButtonGroup className='my-custom-class' sizeClass='btn-group-md'>
+        { props.showSelectedOnlyBtn }
+        { props.exportCSVBtn }
+        { props.insertBtn }
+        { props.deleteBtn }
+        <button type='button'
+          className={ `btn btn-primary` }>
+          View/Edit
+        </button>
+      </ButtonGroup>
+    );
+  }
+
+
+
   render() {
 
+    // console.log(DataStore.data)
 
+    // const options = {
+    //   btnGroup: this.createCustomButtonGroup
+    // };
+
+    const options = {
+      paginationShowsTotal: true,
+      sortName: 'title',  // default sort column name
+      sortOrder: 'desc',  // default sort order
+      afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
+      afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
+      afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
+      btnGroup: this.createCustomButtonGroup
+    };
+ 
 
      const dataX = [{
     name: 'Tanner Linsley',
@@ -251,21 +294,24 @@ const data = [
       // </BootstrapTable>
       // </div>
       // <h1>Welcome to React</h1>
-        const options = {
-      firstPage: 'First Page'
-     };
+     //    const options = {
+     //  firstPage: 'First Page'
+     // };
+      
     return (
       <div key={Date.now()}>
-      {Object.keys(data3).map((e)=>{
+      {Object.keys(data3).map((e,ind)=>{
       return(
-      <div className="container" key={Date.now()}><h1>{e}</h1>
-      <BootstrapTable data={data3[e]} selectRow={ selectRowProp } options={ options } search columnFilter hover pagination >
+      <div className="container" key={ind}><h1>{e}</h1>
+      <BootstrapTable data={data3[e]} selectRow={ selectRowProp } options={ options } search insertRow deleteRow columnFilter hover pagination >
         <TableHeaderColumn dataField='id' dataSort isKey >Id</TableHeaderColumn>
-        <TableHeaderColumn dataField='title' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
-        <TableHeaderColumn dataField='body' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Body</TableHeaderColumn>
-        <TableHeaderColumn dataField='author' className='good' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Author</TableHeaderColumn>
+        <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Body</TableHeaderColumn>
+        <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Author</TableHeaderColumn>
         <TableHeaderColumn dataField='voteScore' dataSort>Vote Score</TableHeaderColumn>
         <TableHeaderColumn dataField='timestamp' dataSort>Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='deleted' dataSort>Deleted</TableHeaderColumn>
+        <TableHeaderColumn dataField='category' dataSort>Category</TableHeaderColumn>
       </BootstrapTable><hr width="75%"/>
       </div>
       )
@@ -283,7 +329,7 @@ function mapStateToProps(state) {
     console.log('Here are the posts',posts)
     for(var i in posts){
       // console.log(c, posts[i][3])
-      if(c==posts[i][6]){
+      if(c==posts[i][6] && posts[i][7]==false){
         defa[c].push({
           id:posts[i][0], 
           timestamp:posts[i][1],
@@ -291,7 +337,8 @@ function mapStateToProps(state) {
           body:posts[i][3],
           author:posts[i][4], 
           voteScore:posts[i][5], 
-          category:posts[i][6]
+          category:posts[i][6],
+          deleted:posts[i][7]
       })
       // console.log(defa)
     }
