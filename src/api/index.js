@@ -45,7 +45,7 @@ export const getAllCommentsFromPost = (id) =>
   fetch(`${api}/posts/${id}/comments/`, {headers})
   .then(res => res.json())
   .then( value => { return value })
-  
+
 
 export const deletePost = (id) =>
     fetch(`${api}/posts/${id}`,{
@@ -69,4 +69,21 @@ export const deletePost = (id) =>
   }
   ))//.map((res) => res.parentDeleted: true))
     .then(res=>res.json())
+    .then(res=>console.log(res))
+
+
+export const editPost = (id, title, body) =>
+    fetch(`${api}/posts/${id}`,{
+    method:'PUT',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+            // id: JSON.stringify(id),
+            // timestamp: JSON.stringify(timestamp),
+            // title: JSON.stringify(title),
+    body: JSON.stringify({id, title, body}),
+            // author: JSON.stringify(author),
+            // categories: JSON.stringify(author)
+  }).then(res=>res.json())
     .then(res=>console.log(res))
