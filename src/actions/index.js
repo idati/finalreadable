@@ -1,7 +1,8 @@
-import { fetchAllCategories, getPosts } from '../api/index'
+import { fetchAllCategories, getPosts, getAllCommentsFromPost } from '../api/index'
 
 export const GET_ALL_CATEGORY = 'GET_ALL_CATEGORY'
 export const GET_ALL_POSTS = 'GET_ALL_POSTS'
+export const GET_ALL_COMMENTS = 'GET_ALL_COMMENTS'
 
 function getAll(categories) {
   return {
@@ -25,9 +26,26 @@ function getAllPost(posts) {
 }
 
 export function getAllPosts() {
+  console.log('ääää', getPosts())
   return dispatch => {
     return  getPosts().then(data =>
       dispatch(getAllPost(data)))
+      // dispatch(data))
+  }
+}
+
+function getAllComment(comments) {
+  console.log('cctop',comments)
+  return {
+    type:GET_ALL_COMMENTS,
+    comments
+  }
+}
+export function getAllComments() {
+  console.log('öööö',getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd'))
+  return dispatch => {
+    return getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd')
+    .then(data => dispatch(getAllComment(data)))
       // dispatch(data))
   }
 }

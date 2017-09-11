@@ -47,6 +47,7 @@ export const getAllCommentsFromPost = (id) =>
   .then( value => { return value })
 
 
+
 export const deletePost = (id) =>
     fetch(`${api}/posts/${id}`,{
     method:'DELETE',
@@ -83,6 +84,57 @@ export const editPost = (id, title, body) =>
             // timestamp: JSON.stringify(timestamp),
             // title: JSON.stringify(title),
     body: JSON.stringify({id, title, body}),
+            // author: JSON.stringify(author),
+            // categories: JSON.stringify(author)
+  }).then(res=>res.json())
+    .then(res=>console.log(res))
+
+
+export const editComment = (id, timestamp, body) =>
+    fetch(`${api}/comments/${id}`,{
+    method:'PUT',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+            // id: JSON.stringify(id),
+            // timestamp: JSON.stringify(timestamp),
+            // title: JSON.stringify(title),
+    body: JSON.stringify({id, timestamp, body}),
+            // author: JSON.stringify(author),
+            // categories: JSON.stringify(author)
+  }).then(res=>res.json())
+    .then(res=>console.log(res))
+
+
+export const deleteComment = (id) =>
+    fetch(`${api}/comments/${id}`,{
+    method:'DELETE',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+            // id: JSON.stringify(id),
+            // timestamp: JSON.stringify(timestamp),
+            // title: JSON.stringify(title),
+    deleted: JSON.stringify(true),
+            // author: JSON.stringify(author),
+            // categories: JSON.stringify(author)
+  }).then(res=>res.json())
+    .then(res=>console.log(res))
+
+
+export const newComment = (id, timestamp, body, author, parentId) =>
+    fetch(`${api}/comments/`,{
+    method:'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+            // id: JSON.stringify(id),
+            // timestamp: JSON.stringify(timestamp),
+            // title: JSON.stringify(title),
+    body: JSON.stringify({id, timestamp, body, author, parentId}),
             // author: JSON.stringify(author),
             // categories: JSON.stringify(author)
   }).then(res=>res.json())

@@ -373,7 +373,7 @@ import './App.css';
 import { connect } from 'react-redux';
 import {Switch, Route, withRouter, Link} from 'react-router-dom';
  
-import { getAllCategory, getAllPosts } from './actions/index'
+import { getAllCategory, getAllPosts, getAllComments } from './actions/index'
 import * as api from './api/index'
  
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -427,14 +427,23 @@ function addProducts(quantity) {
   }
 }
 addProducts(5);
- 
+ console.log('PRODUCTS',products)
 //--------Advanced Code-----------------
 function onRowSelect(row, isSelected) {
   console.log(row.id);
   console.log(`selected: ${isSelected}`);
 }
+
+function onRowSelectEx(row, isSelected) {
+  console.log(row.id);
+  console.log(`selected: ${isSelected}`);
+}
  
 function onSelectAll(isSelected) {
+  console.log(`is select all: ${isSelected}`);
+}
+
+function onSelectAllEx(isSelected) {
   console.log(`is select all: ${isSelected}`);
 }
  
@@ -446,13 +455,33 @@ function onAfterSaveCell(row, cellName, cellValue) {
   api.editPost(row.id, row.title, row.body)
 }
 
+function onAfterSaveCellEx(row, cellName, cellValue) {
+  console.log(`Save cell ${cellName} with value ${cellValue}`);
+  console.log('The whole row :');
+  console.log(row);
+  // api.editPost(row.id, row.title, row.body)
+  api.editComment(row.id, row.timestamp, row.body)
+}
+
 const cellEditProp= {
   mode: "click",
   blurToSave: true,
   afterSaveCell: onAfterSaveCell
 }
  
+const cellEditPropEx= {
+  mode: "click",
+  blurToSave: true,
+  afterSaveCell: onAfterSaveCellEx
+}
+
+
 function onAfterTableComplete() {
+  console.log('Table render complete.');
+  // console.log(row, cellName, cellValue, id);
+}
+
+function onAfterTableCompleteEx() {
   console.log('Table render complete.');
   // console.log(row, cellName, cellValue, id);
 }
@@ -481,6 +510,10 @@ function getcats(a){
   return(function go(){return a})
 }
  
+function getParentId(id){
+  return(function go(){return id})
+}
+
 function onAfterDeleteRow(rowKeys) {
   console.log('onAfterDeleteRow');
   console.log('deletet',rowKeys);
@@ -488,6 +521,17 @@ function onAfterDeleteRow(rowKeys) {
   for (var i in rowKeys){
       console.log(rowKeys[i])
       api.deletePost(rowKeys[i])
+  }
+}
+
+function onAfterDeleteRowEx(rowKeys) {
+  console.log('onAfterDeleteRow');
+  console.log('deletet',rowKeys);
+  // api.deletePost("8xf0y6ziyjabvozdd253nd")
+  for (var i in rowKeys){
+      console.log(rowKeys[i])
+      // api.deletePost(rowKeys[i])
+      api.deleteComment(rowKeys[i])
   }
 }
 
@@ -500,18 +544,21 @@ function onAfterInsertRow(row) {
   api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
 }
 
+
+function onAfterInsertRowEx(row) {
+  //id, timestamp, title, body, author, category)
+  console.log('onAfterInsertRow');
+  console.log(row);
+  console.log(row.id);
+  // api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
+  console.log('lookForMe',row.id, row.timestamp, row.body, row.author, row.parendId)
+  api.newComment(row.id, row.timestamp, row.body, row.author, row.parendId)
+}
+
 // function onAfterSaveCell(id, value, name){
 //   console.log(id, value, name)
 // }
  
-const selectRowProp = {
-  mode: 'checkbox',
-  clickToSelect: true,
-  selected: [], // default select on table
-  bgColor: 'rgb(238, 193, 213)',
-  onSelect: onRowSelect,
-  onSelectAll: onSelectAll
-};
  
 function inserRowProp() {
   return{rowkey:'123456'}
@@ -535,18 +582,83 @@ function nameValidator(value) {
   return true;
 }
 
+function getFormattedDate(_date) {
+
+    var date = new Date(_date)
+
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+
+    month = (month < 10 ? "0" : "") + month;
+    day = (day < 10 ? "0" : "") + day;
+    hour = (hour < 10 ? "0" : "") + hour;
+    min = (min < 10 ? "0" : "") + min;
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var str = date.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
+
+    /*alert(str);*/
+    console.log('newTime',str)
+    return str;
+}
+
 
 //----------------------------------EXPANT TABLE -----------------------------------------------
 
-class BSTable extends React.Component {
+class BSTable extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  
   render() {
+    console.log("HERE WE GO")
+    console.log('this.props.data',this.props.data)
+
+    const optionsEx = {
+      paginationShowsTotal: true,
+      sortName: 'timestamp',  // default sort column name
+      sortOrder: 'desc',  // default sort order
+      afterTableComplete: onAfterTableCompleteEx, // A hook for after table render complete.
+      afterDeleteRow: onAfterDeleteRowEx,  // A hook for after droping rows.
+      afterInsertRow: onAfterInsertRowEx,   // A hook for after insert rows
+      // btnGroup: this.createCustomButtonGroup,
+      // expanding: this.expanding,    //<<<< should be this.state.expanding ?
+      // expandRowBgColor: 'rgb(242,255,163)'
+    };
+    
+    const selectRowPropEx = {
+      mode: 'checkbox',
+      clickToSelect: true,
+      clickToExpand: true,
+      selected: [], // default select on table
+      bgColor: 'rgb(238, 193, 213)',
+      onSelect: onRowSelectEx,
+      onSelectAll: onSelectAllEx
+    };
+
+    console.log('importante',this.props)
+    
     if (this.props.data) {
       return (
-        <BootstrapTable data={ this.props.data }>
-          <TableHeaderColumn dataField='fieldA' isKey={ true }>Field A</TableHeaderColumn>
-          <TableHeaderColumn dataField='fieldB'>Field B</TableHeaderColumn>
-          <TableHeaderColumn dataField='fieldC'>Field C</TableHeaderColumn>
-          <TableHeaderColumn dataField='fieldD'>Field D</TableHeaderColumn>
+        <BootstrapTable 
+          data={ this.props.data[0] }
+          options={ optionsEx }
+          selectRow={ selectRowPropEx }
+          search 
+          insertRow 
+          deleteRow
+          hover 
+          cellEdit={ cellEditPropEx } 
+          >
+          <TableHeaderColumn dataField='id' autoValue={getid} isKey={ true } dataSort={true}>Id</TableHeaderColumn>
+          <TableHeaderColumn dataField='parendId' autoValue={getParentId(this.props.data[1])} dataSort={true}>ParendId</TableHeaderColumn>
+          <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort={true}>Timestamp</TableHeaderColumn>
+          <TableHeaderColumn dataField='body' dataSort={true}>Body</TableHeaderColumn>
+          <TableHeaderColumn dataField='author' dataSort={true}>Author</TableHeaderColumn>
         </BootstrapTable>);
     } else {
       return (<p>?</p>);
@@ -558,29 +670,55 @@ class BSTable extends React.Component {
 
 //---------------------------------------THE END------------------------------------------------/
 // #export class App extends Component {
-export class App extends React.Component {
+export class App extends Component {
 
   constructor(props) {
     super(props);
   }
 
   isExpandableRow(row) {
-    if (row.id < 3) return true;
-    else return false;
+    return true
+    // console.log('1010', row)
+    // if (row.id < 3) return true;
+    // else return false;
   }
 
   expandComponent(row) {
+    console.log('4711',row)
+    console.log('row.expand',row.expand, row.id)
     return (
-    <BSTable data={ row.expand } />
+    <BSTable data={ [row.expand, row.id] } />
     );
   }
  
+  expandColumnComponent({ isExpandableRow, isExpanded }) {
+    let content = '';
+
+    if (isExpandableRow) {
+      content = (isExpanded ? '(-)' : '(+)' );
+    } else {
+      content = ' ';
+    }
+    return (
+      <div> { content } </div>
+    );
+  }
+
+
   componentDidMount() {
     this.props.dispatch(getAllCategory())
+    console.log('üüü',this.props.dispatch(getAllCategory()))
     this.props.dispatch(getAllPosts())
+    //console.log('lengthss', this.props)
+    //for(var t=0; t<=)
+    this.props.dispatch(getAllComments())
+    console.log('Günni',this.props.dispatch(getAllComments()))
     // For Testing
+    //console.log('!!!!',api.getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd'))
     // api.newPost('6ni6ok3ym7mf1p33lneÖ', Date.now(), 'Learn Redux in 15 minutes!', 'Just kidding. It takes more than 100 minutes to learn technology.', 'thingthree', 'react')
   }
+
+ 
  
  
             // return(<p key={index}>{categories[key]}</p>)
@@ -612,7 +750,9 @@ export class App extends React.Component {
  
  
   render() {
- 
+    console.log('yoyo',this.props)
+    // console.log('getAllComments',api.getAllComments())
+    console.log('PRO%',this.props) 
     // console.log(DataStore.data)
  
     // const options = {
@@ -627,9 +767,19 @@ export class App extends React.Component {
       afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
       afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
       btnGroup: this.createCustomButtonGroup,
-      // expanding: this.state.expanding    //<<<< should be this.state.expanding ?
+      expanding: this.expanding,    //<<<< should be this.state.expanding ?
       expandRowBgColor: 'rgb(242,255,163)'
     };
+
+  const selectRowProp = {
+    mode: 'checkbox',
+    clickToSelect: true,
+    clickToExpand: true,
+    selected: [], // default select on table
+    bgColor: 'rgb(238, 193, 213)',
+    onSelect: onRowSelect,
+    onSelectAll: onSelectAll
+  };
 
  
      const dataX = [{
@@ -671,7 +821,7 @@ const data = [
   // { title: 'Elekun Bayo', timestamp: 21, voteScore: 'Zamfara'}
 ];
  
-    const {categories, posts, defaul} = this.props
+    const {categories, posts, defaul, comments} = this.props
     console.log(api.fetchAllCategories())
     console.log(api.getPosts())
     console.log(this)
@@ -772,8 +922,13 @@ const data = [
         // <TableHeaderColumn dataField='timestamp' autoValue={Date.now()} dataSort>Timestamp</TableHeaderColumn>
         // <TableHeaderColumn dataField='deleted' autoValue={'false'} dataSort>Deleted</TableHeaderColumn>
         // <TableHeaderColumn dataField='category' autoValue={e} dataSort>Category</TableHeaderColumn>
+
+        //data={data3[e]}
+        //columnFilter 
     console.log(getstatus)
+    console.log('THIS DATA ARE USED', data3)
     console.log(getcats('react'))
+
      
     return (
       <div key={Date.now()}>
@@ -782,23 +937,25 @@ const data = [
           console.log(e, ind)
           ztemp=e
         }
+
       return(
+
       <div className="container" key={ind}><h1>{e}</h1>
       <BootstrapTable 
-        data={data3[e]} 
-        keyField='id' 
-        selectRow={ selectRowProp } 
-        options={ options } 
+        data={data3[e]}
+        // data={products} 
+        keyField='id'  
+        options={ options }   
+        expandableRow={ this.isExpandableRow }
+        expandComponent={ this.expandComponent }
+        expandColumnOptions={ { expandColumnVisible: true, expandColumnBeforeSelectColumn: false } }
+        selectRow={ selectRowProp }
         search 
         insertRow 
         deleteRow 
-        columnFilter 
         hover 
         pagination 
         cellEdit={ cellEditProp } 
-        expandableRow={this.isExpandanleRow} 
-        expandComponent={this.expandComponent} 
-        expandColumnOptions={{expandColumnVisible:true}}
         >
         <TableHeaderColumn dataField='id' autoValue={getid} dataSort>Id</TableHeaderColumn>
         <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } }>Title</TableHeaderColumn>
@@ -808,7 +965,7 @@ const data = [
         <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort>Timestamp</TableHeaderColumn>
         <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort>Deleted</TableHeaderColumn>
         <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort>Category</TableHeaderColumn>
-      </BootstrapTable><hr width="75%"/>
+      </BootstrapTable><hr width="90%"/>
       </div>
       )
       })}
@@ -816,31 +973,75 @@ const data = [
       )
   }
 }
+
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     // loadAllPosts: () => dispatch(loadAllPosts()),
+//     // loadCategories: () => dispatch(loadCategories()),
+//     comments: (posts[id]) => dispatch(getComments(posts[id]))
+//     // loadPostForCategory: (category) => dispatch(loadPostForCategory(category))
+//   }
+// }
  
 function mapStateToProps(state) {
-  const {categories, comments, posts} = state
+  const {categories, posts, comments} = state
+  var expands=[]
+  for(var z in comments){
+    expands.push({id:comments[z][0],
+                  parendId:comments[z][1],
+                  timestamp:comments[z][2],
+                  body:comments[z][3],
+                  author:comments[z][4],
+                  voteScore:comments[z][5],
+                  deleted:comments[z][6],
+                  parentDeleted:comments[z][7],
+    })
+  }
   var defa = {}
+  console.log('lengths', categories, comments, posts)
   for(var c in categories){
     defa[c]=[]
     console.log('Here are the posts',posts)
     for(var i in posts){
       // console.log(c, posts[i][3])
+      console.log('lili',i)
+      expands=[]
+      for(var o in comments){
+        console.log('commentsss',o)
+        if(comments[o][1]==i){
+              expands.push({id:comments[o][0],
+                  parendId:comments[o][1],
+                  timestamp:getFormattedDate(comments[o][2]),
+                  body:comments[o][3],
+                  author:comments[o][4],
+                  voteScore:comments[o][5],
+                  deleted:comments[o][6],
+                  parentDeleted:comments[o][7],
+            })
+        }
+        console.log('lolo',comments[o][1])
+        console.log('expands',expands)
+      }
       if(c==posts[i][6] && posts[i][7]==false){
         defa[c].push({
           id:posts[i][0],
-          timestamp:posts[i][1],
+          timestamp:getFormattedDate(posts[i][1]),
           title:posts[i][2],
           body:posts[i][3],
           author:posts[i][4],
           voteScore:posts[i][5],
           category:posts[i][6],
-          deleted:posts[i][7]
+          deleted:posts[i][7],
+          expand: expands
       })
       // console.log(defa)
     }
+
   }
   }
+
   console.log(defa)
+  console.log('lengthssss', categories, comments, posts)
   var sortable=[]
   for(var p in posts){
     sortable.push([p, posts[p][0], posts[p][1], posts[p][2], posts[p][3]])
@@ -848,9 +1049,11 @@ function mapStateToProps(state) {
   return {
     categories,
     posts,
+    comments,
     // fposts: sortable.sort(function(a, b) {return a[3] - b[3]}),
     // defaul: defa.react//posts['6ni6ok3ym7mf1p33lnez']
-    defaul: defa
+    defaul: defa,
+    expand: expands
 //[5,4,3].sort(function(a, b) {return a - b})
   }
 }
