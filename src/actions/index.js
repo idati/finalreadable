@@ -44,8 +44,11 @@ function getAllComment(comments) {
 export function getAllComments() {
   console.log('öööö',getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd'))
   return dispatch => {
-    return getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd')
-    .then(data => dispatch(getAllComment(data)))
+    //return getAllCommentsFromPost('8xf0y6ziyjabvozdd253nd')
+    return getPosts()
+      .then((data)=> data
+        .map((d)=> getAllCommentsFromPost(d.id)
+          .then(data => dispatch(getAllComment(data)))))
       // dispatch(data))
   }
 }

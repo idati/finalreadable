@@ -739,15 +739,15 @@ export class App extends Component {
         { props.exportCSVBtn }
         { props.insertBtn }
         { props.deleteBtn }
-        <button type='button'
-          className={ `btn btn-primary` }>
-          View/Edit
-        </button>
+
       </ButtonGroup>
     );
   }
  
- 
+         //<button type='button'
+        //  className={ `btn btn-primary` }>
+        //  View/Edit
+        //</button>
  
   render() {
     console.log('yoyo',this.props)
