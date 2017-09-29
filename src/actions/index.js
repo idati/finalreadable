@@ -126,8 +126,7 @@ export const backendLoadPostComments = (dispatch) => {
 };
 
 export const upVoteComment = (id) => dispatch => (
-    // console.log('pooooom',id)
-    // voteComment(id, "upVote").then((i)=>console.log('pooooom',i))
+
     voteComment(id, "upVote")
         .then(comments => dispatch({
             type: UP_VOTE_COMMENT,

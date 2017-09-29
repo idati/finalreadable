@@ -27,32 +27,21 @@ var identifier = require('identifier');
  
 //--------Advanced Code-----------------
 function onRowSelect(row, isSelected){
-  console.log('+#+#+#',row.id, this);
-  // this.all.props.selection=row.id
-  console.log(`selected: ${isSelected}`);
 
-   console.log('upupupup',this.state)
     this.setState({
       selectedRows: [...this.props.selectedRows, row.id]
     })
-    // this.props.selectedRows={selectedRows: row.id}
    return false
 }
 
-// function onRowSelectEx(row, isSelected) {
-//   console.log(row.id);
-//   console.log(`selected: ${isSelected}`);
-// }
+
  
 function onSelectAll(isSelected) {
   console.log(`is select all: ${isSelected}`);
 }
 
-// function onSelectAllEx(isSelected) {
-//   console.log(`is select all: ${isSelected}`);
-// }
+
  
- // editable (id, title, body)
 function onAfterSaveCell(row, cellName, cellValue) {
   console.log(`Save cell ${cellName} with value ${cellValue}`);
   console.log('The whole row :');
@@ -60,13 +49,6 @@ function onAfterSaveCell(row, cellName, cellValue) {
   api.editPost(row.id, row.title, row.body)
 }
 
-// function onAfterSaveCellEx(row, cellName, cellValue) {
-//   console.log(`Save cell ${cellName} with value ${cellValue}`);
-//   console.log('The whole row :');
-//   console.log(row);
-//   // api.editPost(row.id, row.title, row.body)
-//   api.editComment(row.id, row.timestamp, row.body)
-// }
 
 const cellEditProp= {
   mode: "click",
@@ -74,22 +56,12 @@ const cellEditProp= {
   afterSaveCell: onAfterSaveCell
 }
  
-// const cellEditPropEx= {
-//   mode: "click",
-//   blurToSave: true,
-//   afterSaveCell: onAfterSaveCellEx
-// }
-
 
 function onAfterTableComplete() {
   console.log('Table render complete.');
-  // console.log(row, cellName, cellValue, id);
+
 }
 
-// function onAfterTableCompleteEx() {
-//   console.log('Table render complete.');
-//   // console.log(row, cellName, cellValue, id);
-// }
  
 function getid(){
   return (identifier(21))
@@ -111,7 +83,6 @@ function getstatus(){
 var ztemp
  
 function getcats(a){
-  // console.log('categ',typeof e)
   return(function go(){return a})
 }
  
@@ -121,24 +92,12 @@ function getParentId(id){
 
 function onAfterDeleteRow(rowKeys) {
   console.log('onAfterDeleteRow');
-  console.log('deletet',rowKeys, this);
-  // api.deletePost("8xf0y6ziyjabvozdd253nd")
   for (var i in rowKeys){
       console.log(rowKeys[i])
       api.deletePost(rowKeys[i])
   }
 }
 
-// function onAfterDeleteRowEx(rowKeys) {
-//   console.log('onAfterDeleteRow');
-//   console.log('deletet',rowKeys);
-//   // api.deletePost("8xf0y6ziyjabvozdd253nd")
-//   for (var i in rowKeys){
-//       console.log(rowKeys[i])
-//       // api.deletePost(rowKeys[i])
-//       api.deleteComment(rowKeys[i])
-//   }
-// }
 
  function getrow(row){
       
@@ -148,23 +107,8 @@ function onAfterDeleteRow(rowKeys) {
 
 
 function onAfterInsertRow(row) {
-  //id, timestamp, title, body, author, category)
-  console.log('onAfterInsertRow');
-  console.log('thyson',this);
-  console.log(row.id);
   api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
 }
-
-
-// function onAfterInsertRowEx(row) {
-//   //id, timestamp, title, body, author, category)
-//   console.log('onAfterInsertRow');
-//   console.log(row);
-//   console.log(row.id);
-//   // api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
-//   console.log('lookForMe',row.id, row.timestamp, row.body, row.author, row.parentId)
-//   api.newComment(row.id, row.timestamp, row.body, row.author, row.parentId)
-// }
 
 
  
@@ -208,69 +152,11 @@ function getFormattedDate(_date) {
 
 //----------------------------------EXPANT TABLE -----------------------------------------------
 
-// class BSTable extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-  
-//   render() {
-//     console.log("HERE WE GO")
-//     console.log('this.props.data',this.props.data)
-
-//     const optionsEx = {
-//       paginationShowsTotal: true,
-//       sortName: 'timestamp',  // default sort column name
-//       sortOrder: 'desc',  // default sort order
-//       afterTableComplete: onAfterTableCompleteEx, // A hook for after table render complete.
-//       afterDeleteRow: onAfterDeleteRowEx,  // A hook for after droping rows.
-//       afterInsertRow: onAfterInsertRowEx,   // A hook for after insert rows
-//       // btnGroup: this.createCustomButtonGroup,
-//       // expanding: this.expanding,    //<<<< should be this.state.expanding ?
-//       // expandRowBgColor: 'rgb(242,255,163)'
-//     };
-    
-//     const selectRowPropEx = {
-//       mode: 'checkbox',
-//       clickToSelect: true,
-//       clickToExpand: true,
-//       selected: [], // default select on table
-//       bgColor: 'rgb(238, 193, 213)',
-//       onSelect: onRowSelectEx,
-//       onSelectAll: onSelectAllEx
-//     };
-
-//     console.log('importante',this.props)
-    
-//     if (this.props.data) {
-//       return (
-//         <BootstrapTable 
-//           data={ this.props.data[0] }
-//           options={ optionsEx }
-//           selectRow={ selectRowPropEx }
-//           search 
-//           insertRow 
-//           deleteRow
-//           hover 
-//           cellEdit={ cellEditPropEx } 
-//           >
-//           <TableHeaderColumn dataField='id' autoValue={getid} isKey={ true } dataSort={true}>Id</TableHeaderColumn>
-//           <TableHeaderColumn dataField='parentId' autoValue={getParentId(this.props.data[1])} dataSort={true}>ParentId</TableHeaderColumn>
-//           <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort={true}>Timestamp</TableHeaderColumn>
-//           <TableHeaderColumn dataField='body' dataSort={true}>Body</TableHeaderColumn>
-//           <TableHeaderColumn dataField='author' dataSort={true}>Author</TableHeaderColumn>
-//         </BootstrapTable>);
-//     } else {
-//       return (<p>?</p>);
-//     }
-//   }
-// }
 //--------------------------------------STARTEX---------------------------------------------------/
 function onAfterSaveCellEx(row, cellName, cellValue) {
   console.log(`Save cell ${cellName} with value ${cellValue}`);
   console.log('The whole row :');
   console.log(row);
-  // api.editPost(row.id, row.title, row.body)
   api.editComment(row.id, row.timestamp, row.body)
 }
 
@@ -288,16 +174,13 @@ function onSelectAllEx(isSelected) {
 
 function onAfterTableCompleteEx() {
   console.log('Table render complete.');
-  // console.log(row, cellName, cellValue, id);
 }
 
 function onAfterDeleteRowEx(rowKeys) {
   console.log('onAfterDeleteRow');
   console.log('deletet',rowKeys);
-  // api.deletePost("8xf0y6ziyjabvozdd253nd")
   for (var i in rowKeys){
       console.log(rowKeys[i])
-      // api.deletePost(rowKeys[i])
       api.deleteComment(rowKeys[i])
   }
 }
@@ -305,47 +188,24 @@ function onAfterDeleteRowEx(rowKeys) {
 function onAfterInsertRowEx(row) {
   //id, timestamp, title, body, author, category)
   console.log('onAfterInsertRow');
-  console.log(row);
-  console.log(row.id);
-  // api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
-  console.log('lookForMe',row.id, row.timestamp, row.body, row.author, row.parentId)
   api.newComment(row.id, row.timestamp, row.body, row.author, row.parentId)
-  console.log('ttttt',this)
 }
 //---------------------------------------START----------------------------------------------------/
 export class BSTable extends Component {
     constructor(props, context){
       super(props);
-      // this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
       this.state = {
         selectedRows: []
     }
 
   };
 
-  // constructor(){
-  //   super();
-  //   this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
-  // };
   
   onRowSelectEx = ({id}, isSelected) => {
-    console.log('+#+#+#',id, this);
-    // this.all.props.selection=row.id
     console.log(`selected: ${isSelected}`);
-    // if (isSelected) {
-    //   this.setState({ selectedRows: [...this.state.selectedRows, id] });
-    // } else {
-    //   this.setState({ selectedRows: this.state.selectedRows.filter(it => it !== id) });
-    // }
-   // this.setState({
-   //    key: row.id
-   //  })
-   console.log('upupupup',this)
     this.setState({
       selectedRows: [...this.state.selectedRows, id]
     })
-    // this.props.selectedRows={selectedRows: row.id}
-   // return id
   }
 
   forceUpdateHandler(){
@@ -354,16 +214,10 @@ export class BSTable extends Component {
 
   componentDidMount() {
     const { post: {id}, commente, createNewComment, upVoteComment, downVoteComment} = this.props;
-    console.log('Appppo',App)
-    // getCommente(id);
 
   }
 
     createCustomButtonGroup = props => {
-    //createCustomButtonGroup(row){ 
-      console.log('lölölölö', this)
-      // console.log('jettzzzzzt',this.props.upVoteComment(this.state.selectedRows[0]))
-      // const selected = this.refs.table.state.selectedRowKeys
     return (
       <ButtonGroup className='my-custom-class' sizeClass='btn-group-md'>
         { props.showSelectedOnlyBtn }
@@ -389,9 +243,6 @@ export class BSTable extends Component {
   }
 
   render() {
-    console.log('Apppp',this)
-    console.log("HERE WE GO")
-    console.log('this.props.data',this.props.data)
 
     const optionsEx = {
       paginationShowsTotal: true,
@@ -418,9 +269,7 @@ export class BSTable extends Component {
       selected: this.state.selectedRows,
       all: this
     };
-
-    console.log('importante',this.props.data[0])
-    
+ 
     if (this.props.data) {
       {this.forceUpdateHandler}
 
@@ -457,13 +306,11 @@ export class BSTable extends Component {
 
 export class App extends Component {
   getSelectedRowKeys() {
-    //Here is your answer
-    console.log('yoyoyDieter',this)
+    console.log(this)
   }
 
    constructor(props, context){
     super(props);
-    // this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
     this.state = {
       selectedRows: []
     }
@@ -472,115 +319,61 @@ export class App extends Component {
 
 
 onRowSelect = ({id}, isSelected) => {
-  console.log('+#+#+#',id, this);
-  // this.all.props.selection=row.id
+
   console.log(`selected: ${isSelected}`);
-    // if (isSelected) {
-    //   this.setState({ selectedRows: [...this.state.selectedRows, id] });
-    // } else {
-    //   this.setState({ selectedRows: this.state.selectedRows.filter(it => it !== id) });
-    // }
-   // this.setState({
-   //    key: row.id
-   //  })
-   console.log('upupupup',this.state)
+
     this.setState({
       selectedRows: [...this.props.selectedRows, id]
     })
-    // this.props.selectedRows={selectedRows: row.id}
-   // return id
+
 }
 
   
   forceUpdateHandler(){
-    console.log('force!!',this)
     this.forceUpdate();
     
   };
 
     state={commm:[]}
-    // this.setState(this.props.getCommente('8xf0y6ziyjabvozdd253nd'))
-    // console.log('this',this.props.getCommente('8xf0y6ziyjabvozdd253nd').then((data)=>data.comments))
 
   onClickProductSelected(cell, row, enumObject, rowIndex){
-    //api.votePost(row.id, "upVote")
-    console.log('watchMe',this.props.upVote(row.id))
-    // onClick={() => upVote(row.id)}
-    // this.props.upVote(row.id)
-   console.log('Product #', rowIndex);
+
   }
   cellButton(cell, row, enumObject, rowIndex) {
     return (this.props.upVote(row.id))
-    // return (
-    //    <button 
-    //       type="button" 
-    //       onClick={() => this.props.upVote(row.id)}//this.onClickProductSelected(cell, row, rowIndex)}
-    //    >
-    //    upVote
-    //    </button>
-    // )
+
   }
 
   componentDidMount() {
     const {posts, post, getCommente, createNewComment} = this.props
-    // var tmp = this
-    console.log('why Iam empty?',posts)
-    // createNewComment()
+
       
 
     return {
     post2: posts.then((data)=> data.posts.map((a)=> {getCommente(a.id)}))
     }
-    // getCommente('8xf0y6ziyjabvozdd253nd').then((data)=>this.setState(data))
-    // getCommente('8xf0y6ziyjabvozdd253nd').then((data)=>console.log('yoyoyo',data.comments))
-    // posts.map((i)=> console.log(i)
-    console.log('////',post)
-    // posts.map((data) => getCommente(data.id))
-    var z=['8xf0y6ziyjabvozdd253nd', '6ni6ok3ym7mf1p33lnez']
-    console.log('/*-/*-',posts)
-    // for(var i in post){
-    //   console.log('!!!!',post.id)
-    //   getCommente(post[i])
-    // }
+
+
+    // var z=['8xf0y6ziyjabvozdd253nd', '6ni6ok3ym7mf1p33lnez']
+
 }
 
   isExpandableRow(row) {
     return true
-    // console.log('1010', row)
-    // if (row.id < 3) return true;
-    // else return false;
-    //row.expand
   }
 
 
   expandComponent = (row, props) => {
 
-        console.log('4711',row, this)
-    // console.log('row.expand',getCommente(row.id))
-    // console.log('commentaa',this.props.getCommente(row.id))
-    //<BSTable data={ [row.expand, row.id] } />
     getCommente(row.id)
     var resu=[]
-    // api.getAllCommentsFromPost(row.id)
-    // .then((data)=>{
-    //   console.log('yahooooo', data);
-    //   resu.push({id: 1})
-    // })
     
    var result=api.getAllCommentsFromPost(row.id).then(function(d){
-            // console.log('11111',d);
-            // resu.push(d);
             return(d)
-            // return (<BSTable data={ [d, row.id] } />);
         })
 
    const zu=[]
    result.then((a)=>zu.push(a))
-    // var keys = Object.keys(resu);
-    // console.log('keys',keys)
-    // this.mapState()
-    // this.props.selection=row.id
-    console.log('forceUpdate',this, this.props)
     if(row.expand){
     return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} downVoteComment={this.props.downVoteComment} data={ [row.expand.filter((a)=> a.parentId==row.id), row.id] } />);//[row.expand, row.id] } />);
     } else {
@@ -589,61 +382,9 @@ onRowSelect = ({id}, isSelected) => {
 
   }
 
-  // upVoteComment={this.props.upVoteComment}
 
-  // expandComponent(row, props) {
-  //   console.log('4711',row, props)
-  //   // console.log('row.expand',getCommente(row.id))
-  //   // console.log('commentaa',this.props.getCommente(row.id))
-  //   //<BSTable data={ [row.expand, row.id] } />
-  //   getCommente(row.id)
-  //   var resu=[]
-  //   // api.getAllCommentsFromPost(row.id)
-  //   // .then((data)=>{
-  //   //   console.log('yahooooo', data);
-  //   //   resu.push({id: 1})
-  //   // })
-    
-  //  var result=api.getAllCommentsFromPost(row.id).then(function(d){
-  //           // console.log('11111',d);
-  //           // resu.push(d);
-  //           return(d)
-  //           // return (<BSTable data={ [d, row.id] } />);
-  //       })
-
-  //  const zu=[]
-  //  result.then((a)=>zu.push(a))
-  //   // var keys = Object.keys(resu);
-  //   // console.log('keys',keys)
-  //   // this.mapState()
-  //   // this.props.selection=row.id
-  //   console.log('forceUpdate',this, this.props)
-  //   if(row.expand){
-  //   return (<BSTable post={row.id} data={ [row.expand.filter((a)=> a.parentId==row.id), row.id] } />);//[row.expand, row.id] } />);
-  //   } else {
-  //     return (<BSTable post={row.id} data={ [[], row.id] } />);
-  //   }
-  // }
-  
-  // expandColumnComponent({ isExpandableRow, isExpanded }) {
-  //   let content = '';
-
-  //   if (isExpandableRow) {
-  //     content = (isExpanded ? '(-)' : '(+)' );
-  //   } else {
-  //     content = ' ';
-  //   }
-  //   return (
-  //     <div> { content } </div>
-  //   );
-  // }
-
-  
- 
     createCustomButtonGroup = props => {
-    //createCustomButtonGroup(row){ 
-      console.log('lölölölö', this, this.getSelectedRowKeys)
-      // const selected = this.refs.table.state.selectedRowKeys
+
     return (
       <ButtonGroup className='my-custom-class' sizeClass='btn-group-md'>
         { props.showSelectedOnlyBtn }
@@ -664,20 +405,9 @@ onRowSelect = ({id}, isSelected) => {
       </ButtonGroup>
     );
   }
-          // onClick={() => this.props.upVote(onRowSelect)}>
-         //<button type='button'
-        //  className={ `btn btn-primary` }>
-        //  View/Edit
-        //</button>
-    // console.log('App',this)
+
 
   render() {
-
-    // console.log('vj',api.voteComment('8tu4bsun805n8un48ve89', "upVote"))
-    // console.log('aj',api.votePost('8xf0y6ziyjabvozdd253nd', "upVote"))
-
-    console.log('App',this)
-    // console.log('commente',this.props.getCommente('8xf0y6ziyjabvozdd253nd'))
 
     const options = {
       all: this,
@@ -715,7 +445,6 @@ onRowSelect = ({id}, isSelected) => {
  
     const {categories, posts, defaul, comments, getCommente, createNewComment, upVote} = this.props
 
-    // console.log('....',getCommente('6ni6ok3ym7mf1p33lnez')) 
     const data2=defaul.react
     const data3=defaul
 
@@ -766,22 +495,13 @@ onRowSelect = ({id}, isSelected) => {
       )
   }
 }
- // <TableHeaderColumn dataField='button' dataFormat={this.cellButton.bind(this)} isKey expandable={ false }/>
-// <TableHeaderColumn dataField='button' autoValue={this.cellButton.bind(this)} dataFormat={this.cellButton.bind(this) } isKey expandable={ false }/>
 export function mapDispatchToProps(dispatch) {
   console.log('dispatch',dispatch)
-  //   var getpost=[]
-  //   var y=Array()
-  //    dispatch(getAllPosts()).then((d) => d.posts.map((a)=> y.append(a)))
-  //   console.log('öäü',y[0])
-  // for(var p in y){
-  //   getpost.push({id: p})
 
-  // }
   return {
     posts: dispatch(getAllPosts()),
     categories: dispatch(getAllCategory()),
-    // comments: dispatch(getAllCategory()),
+
     getCommente: (id) => dispatch(getCommente(id)),
     createNewComment: (comments) => dispatch(createNewComment(comments)),
     upVote: (id) => dispatch(upVotePost(id)),
@@ -790,20 +510,16 @@ export function mapDispatchToProps(dispatch) {
     upVoteComment: (id) => dispatch(upVoteComment(id)),
     downVoteComment: (id) => dispatch(downVoteComment(id)),
     
-    // loadPostForCategory: (category) => dispatch(loadPostForCategory(category))
   }
 }
  
 export function mapStateToProps(state, ownProps, dispatch) {
-  // console.log('789456123!!',this)
+
   const {categories, posts, comments} = state
   var expands=[]
 
-  console.log('Rayon',comments)
   if(posts.posts){
-    // this.setState({key: posts.posts.id})
-    console.log('voteScore',state)
-    console.log('voteScore',posts[posts.posts.id], posts.posts)
+
     posts[posts.posts.id]= [
                             posts.posts.id, 
                             posts.posts.timestamp,
@@ -815,11 +531,8 @@ export function mapStateToProps(state, ownProps, dispatch) {
                             posts.posts.deleted
                           ] 
   }
-  console.log('state', this.props)
-  console.log('....',this)//('8xf0y6ziyjabvozdd253nd')
-  // dispatch(getCommente('8xf0y6ziyjabvozdd253nd'))
-  console.log('....',getCommente('6ni6ok3ym7mf1p33lnez'))  
-  // console.log('getCommente', getCommente('8xf0y6ziyjabvozdd253nd'))
+
+
   var zu=[]
   var getpost=[]
   for(var p in posts){
@@ -827,10 +540,8 @@ export function mapStateToProps(state, ownProps, dispatch) {
 
   api.getAllCommentsFromPost(posts[p][0]).then((a)=> zu.push(a))
   }
-  console.log('asd', comments)
   for(var z in comments){
     for(var y in comments[z]){
-      console.log('f****', comments[z][y])
       expands.push({id:comments[z][y].id,
               parentId:comments[z][y].parentId,
               timestamp:getFormattedDate(comments[z][y].timestamp),
@@ -841,29 +552,13 @@ export function mapStateToProps(state, ownProps, dispatch) {
               parentDeleted:comments[z][y].parentDeleted,
     })
     }
-    // expands.push({id:comments[z].id,
-    //               parentId:comments[z].parentId,
-    //               timestamp:comments[z].timestamp,
-    //               body:comments[z].body,
-    //               author:comments[z].author,
-    //               voteScore:comments[z].voteScore,
-    //               deleted:comments[z].deleted,
-    //               parentDeleted:comments[z].parentDeleted,
-    // })
   }
   var defa = {}
   for(var c in categories){
     defa[c]=[]
     for(var i in posts){
-      // expands=[]
-      // console.log('ids',i)
-      // api.getAllCommentsFromPost(i).then((data)=>{expands.push(data)})//{expands.push(data)})
-      // console.log('expands',expands)
       for(var o in comments){
-        console.log('commentsss',o, comments[o])
-        // if(o!='comment'){
         if(comments[o][1]==i){
-              console.log('wow',comments[o][2])
               expands.push({id:comments[o][0],
                   parentId:comments[o][1],
                   timestamp:getFormattedDate(comments[o][2]),
@@ -895,7 +590,6 @@ export function mapStateToProps(state, ownProps, dispatch) {
 
   }
   }
-  console.log('789456123',ownProps)
 
   var sortable=[]
   for(var p in posts){

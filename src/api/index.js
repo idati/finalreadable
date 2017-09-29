@@ -30,12 +30,9 @@ export const newPost = (id, timestamp, title, body, author, category) =>
         ...headers,
         'Content-Type': 'application/json'
       },
-      // id: JSON.stringify(id),
-      // timestamp: JSON.stringify(timestamp),
-      // title: JSON.stringify(title),
+
       body: JSON.stringify({id, timestamp, title,body,author,category}),
-      // author: JSON.stringify(author),
-      // categories: JSON.stringify(author)
+
     }).then(res=>res.json())
       .then(res=>console.log(res))
 
@@ -55,12 +52,9 @@ export const deletePost = (id) =>
       ...headers,
       'Content-Type': 'application/json'
     },
-            // id: JSON.stringify(id),
-            // timestamp: JSON.stringify(timestamp),
-            // title: JSON.stringify(title),
+
     deleted: JSON.stringify(true),
-            // author: JSON.stringify(author),
-            // categories: JSON.stringify(author)
+
   }).then(getAllCommentsFromPost(id).then(
     value =>{
     for(let j=0; j<value.length; j++){
@@ -68,9 +62,7 @@ export const deletePost = (id) =>
     }
     console.log(value)
   }
-  ))//.map((res) => res.parentDeleted: true))
-    // .then(res=>res.json())
-    // .then(res=>console.log(res))
+  ))
 
 
 export const editPost = (id, title, body) =>
@@ -80,12 +72,9 @@ export const editPost = (id, title, body) =>
       ...headers,
       'Content-Type': 'application/json'
     },
-            // id: JSON.stringify(id),
-            // timestamp: JSON.stringify(timestamp),
-            // title: JSON.stringify(title),
+
     body: JSON.stringify({id, title, body}),
-            // author: JSON.stringify(author),
-            // categories: JSON.stringify(author)
+
   }).then(res=>res.json())
     .then(res=>console.log(res))
 
@@ -97,12 +86,9 @@ export const editComment = (id, timestamp, body) =>
       ...headers,
       'Content-Type': 'application/json'
     },
-            // id: JSON.stringify(id),
-            // timestamp: JSON.stringify(timestamp),
-            // title: JSON.stringify(title),
+   
     body: JSON.stringify({id, timestamp, body}),
-            // author: JSON.stringify(author),
-            // categories: JSON.stringify(author)
+
   }).then(res=>res.json())
     .then(res=>console.log(res))
 
@@ -114,12 +100,9 @@ export const deleteComment = (id) =>
       ...headers,
       'Content-Type': 'application/json'
     },
-            // id: JSON.stringify(id),
-            // timestamp: JSON.stringify(timestamp),
-            // title: JSON.stringify(title),
+
     deleted: JSON.stringify(true),
-            // author: JSON.stringify(author),
-            // categories: JSON.stringify(author)
+
   }).then(res=>res.json())
     .then(res=>console.log(res))
 
@@ -131,12 +114,9 @@ export const newComment = (id, timestamp, body, author, parentId) =>
       ...headers,
       'Content-Type': 'application/json'
     },
-            // id: JSON.stringify(id),
-            // timestamp: JSON.stringify(timestamp),
-            // title: JSON.stringify(title),
+
     body: JSON.stringify({id, timestamp, body, author, parentId}),
-            // author: JSON.stringify(author),
-            // categories: JSON.stringify(author)
+
   }).then(res=>res.json())
     .then(res=>console.log('insert new comment',res))
 
@@ -153,45 +133,7 @@ export const votePost = (id, option) =>
         })
     }).then(res => res.json())
 
-// export const votePost = (id, option) =>
-//     fetch(`${api}/posts/${id}`,{
-//     method:'POST',
-//     headers: {
-//       ...headers,
-//       'Content-Type': 'application/json'
-//     },
-//     // console.log(option);
-//             // id: JSON.stringify(id),
-//             // timestamp: JSON.stringify(timestamp),
-//             //  body: JSON.stringify({vote}),
-//             //  console.log(vote);
-//             // vote
-//      body:JSON.stringify({id, option}),
 
-//     // console.log(vode)
-//             // author: JSON.stringify(author),
-//             // categories: JSON.stringify(author)
-//   }).then(res=>res.json())
-//     .then(res=>console.log(res, option))
-
-
-// export const voteComment = (id, option) =>
-//     fetch(`${api}/comments/${id}`,{
-//     method:'POST',
-//     headers: {
-//       ...headers,
-//       'Content-Type': 'application/json'
-//     },
-//     // console.log(option);
-//             // id: JSON.stringify(id),
-//             // timestamp: JSON.stringify(timestamp),
-//             // title: JSON.stringify(title),
-//     body: JSON.stringify({id, option}),
-//     // console.log(vode)
-//             // author: JSON.stringify(author),
-//             // categories: JSON.stringify(author)
-//   }).then(res=>res.json())
-//     .then(res=>console.log(res, option))
 
 
 export const voteComment = (id, option) =>
