@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import BSTable from './BSTable';
 import registerServiceWorker from './registerServiceWorker';
 
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
@@ -39,12 +40,26 @@ const store = createStore(reducer,
     applyMiddleware(logger, thunk)
   ))
 
+
 ReactDOM.render(
 
   <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </Provider>
+  </Provider>  
+
+
   , document.getElementById('root'));
+
+// ReactDOM.render(
+
+//   <Provider store={store}>
+//     <BrowserRouter>
+//       <BSTable />
+//     </BrowserRouter>
+//   </Provider>  
+
+
+//   , document.getElementById('root'));
 registerServiceWorker();
