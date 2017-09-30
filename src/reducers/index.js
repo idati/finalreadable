@@ -68,7 +68,7 @@ export function comments(state = {}, action){
       case UP_VOTE_COMMENT:
             let existingComments2 = state[action.comments.parentId] || [];
             for(var i in existingComments2){
-                if (existingComments2[i].id==action.comments.id){
+                if (existingComments2[i].id===action.comments.id){
                     existingComments2[i]=action.comments
 
       }

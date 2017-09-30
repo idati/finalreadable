@@ -1,51 +1,24 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import {render} from 'react-dom'
 import './App.css';
 import { connect } from 'react-redux';
-import {Switch, Route, withRouter, Link} from 'react-router-dom';
-import {getAllCommentsFromPost} from './api/index';
-
- 
-import { getAllCategory, getAllPosts, getAllComments, getCommente, createNewComment, upVotePost, upVoteComment, downVotePost, downVoteComment } from './actions/index'
+import {withRouter} from 'react-router-dom';
+import { getAllCategory, getAllPosts, getCommente, createNewComment, upVotePost, upVoteComment, downVotePost, downVoteComment } from './actions/index'
 import * as api from './api/index'
- 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { MuiDataTable } from 'mui-data-table'
-import { ReduxTable } from 'redux-data-table';
- 
-import ReactTable from 'react-table'
-// import { TableContainer, Table } from 'react-custom-table';
 import 'react-table/react-table.css'
-//import {BSTable} from './BSTable'
-
-import { Tabs, Tab } from 'react-bootstrap';
- 
 import {BootstrapTable, TableHeaderColumn, ButtonGroup} from 'react-bootstrap-table'
 
 var identifier = require('identifier');
  
-//--------Advanced Code-----------------
-function onRowSelect(row, isSelected){
-
-    this.setState({
-      selectedRows: [...this.props.selectedRows, row.id]
-    })
-   return false
-}
-
 
  
 function onSelectAll(isSelected) {
   console.log(`is select all: ${isSelected}`);
 }
 
-
- 
 function onAfterSaveCell(row, cellName, cellValue) {
   console.log(`Save cell ${cellName} with value ${cellValue}`);
-  console.log('The whole row :');
-  console.log(row);
+  // console.log('The whole row :');
+  // console.log(row);
   api.editPost(row.id, row.title, row.body)
 }
 
@@ -59,7 +32,6 @@ const cellEditProp= {
 
 function onAfterTableComplete() {
   console.log('Table render complete.');
-
 }
 
  
@@ -80,8 +52,6 @@ function getstatus(){
   return(false)
 }
 
-var ztemp
- 
 function getcats(a){
   return(function go(){return a})
 }
@@ -91,31 +61,15 @@ function getParentId(id){
 }
 
 function onAfterDeleteRow(rowKeys) {
-  console.log('onAfterDeleteRow');
   for (var i in rowKeys){
-      console.log(rowKeys[i])
       api.deletePost(rowKeys[i])
   }
 }
 
 
- function getrow(row){
-      
-      console.log('getrow',row)
-      return row
-    }
-
-
 function onAfterInsertRow(row) {
   api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
 }
-
-
- 
-function inserRowProp() {
-  return{rowkey:'123456'}
-}
- 
  
 function nameValidator(value) {
   if (!value) {
@@ -156,7 +110,6 @@ function getFormattedDate(_date) {
 function onAfterSaveCellEx(row, cellName, cellValue) {
   console.log(`Save cell ${cellName} with value ${cellValue}`);
   console.log('The whole row :');
-  console.log(row);
   api.editComment(row.id, row.timestamp, row.body)
 }
 
@@ -169,6 +122,7 @@ const cellEditPropEx= {
 
 function onSelectAllEx(isSelected) {
   console.log(`is select all: ${isSelected}`);
+  return(true)
 }
 
 
@@ -180,13 +134,11 @@ function onAfterDeleteRowEx(rowKeys) {
   console.log('onAfterDeleteRow');
   console.log('deletet',rowKeys);
   for (var i in rowKeys){
-      console.log(rowKeys[i])
       api.deleteComment(rowKeys[i])
   }
 }
 
 function onAfterInsertRowEx(row) {
-  //id, timestamp, title, body, author, category)
   console.log('onAfterInsertRow');
   api.newComment(row.id, row.timestamp, row.body, row.author, row.parentId)
 }
@@ -211,11 +163,6 @@ export class BSTable extends Component {
   forceUpdateHandler(){
     this.forceUpdate();
   };
-
-  componentDidMount() {
-    const { post: {id}, commente, createNewComment, upVoteComment, downVoteComment} = this.props;
-
-  }
 
     createCustomButtonGroup = props => {
     return (
@@ -253,25 +200,24 @@ export class BSTable extends Component {
       afterInsertRow: onAfterInsertRowEx,   // A hook for after insert rows
       btnGroup: this.createCustomButtonGroup,
       // btnGroup: this.createCustomButtonGroup,
-      // expanding: this.expanding,    //<<<< should be this.state.expanding ?
-      // expandRowBgColor: 'rgb(242,255,163)'
-      all: this
+      expanding: this.expanding,    //<<<< should be this.state.expanding ?
+      expandRowBgColor: 'rgb(242,255,163)'
     };
     
     const selectRowPropEx = {
       mode: 'checkbox',
       clickToSelect: true,
       clickToExpand: true,
-      selected: [], // default select on table
+      // selected: [], // default select on table
       bgColor: 'rgb(238, 193, 213)',
       onSelect: this.onRowSelectEx,
       onSelectAll: onSelectAllEx,
       selected: this.state.selectedRows,
-      all: this
+      // all: this
     };
  
     if (this.props.data) {
-      {this.forceUpdateHandler}
+      // {this.forceUpdateHandler}
 
       return (
 
@@ -345,16 +291,16 @@ onRowSelect = ({id}, isSelected) => {
   }
 
   componentDidMount() {
-    const {posts, post, getCommente, createNewComment} = this.props
+    const {posts, getCommente} = this.props
 
       
 
     return {
-    post2: posts.then((data)=> data.posts.map((a)=> {getCommente(a.id)}))
+    post2: posts.then((data)=> data.posts.map((a)=> {return(getCommente(a.id))}))
     }
 
 
-    // var z=['8xf0y6ziyjabvozdd253nd', '6ni6ok3ym7mf1p33lnez']
+  
 
 }
 
@@ -366,7 +312,6 @@ onRowSelect = ({id}, isSelected) => {
   expandComponent = (row, props) => {
 
     getCommente(row.id)
-    var resu=[]
     
    var result=api.getAllCommentsFromPost(row.id).then(function(d){
             return(d)
@@ -375,7 +320,7 @@ onRowSelect = ({id}, isSelected) => {
    const zu=[]
    result.then((a)=>zu.push(a))
     if(row.expand){
-    return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} downVoteComment={this.props.downVoteComment} data={ [row.expand.filter((a)=> a.parentId==row.id), row.id] } />);//[row.expand, row.id] } />);
+    return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} downVoteComment={this.props.downVoteComment} data={ [row.expand.filter((a)=> a.parentId===row.id), row.id] } />);//[row.expand, row.id] } />);
     } else {
       return (<BSTable post={row.id} data={ [[], row.id] } />);
     }
@@ -431,7 +376,7 @@ onRowSelect = ({id}, isSelected) => {
     mode: 'checkbox',
     clickToSelect: true,
     clickToExpand: true,
-    selected: [], // default select on table
+    // selected: [], // default select on table
     bgColor: 'rgb(238, 193, 213)',
     // onSelect: onRowSelect,
     onSelectAll: onSelectAll, 
@@ -443,20 +388,18 @@ onRowSelect = ({id}, isSelected) => {
 
  
  
-    const {categories, posts, defaul, comments, getCommente, createNewComment, upVote} = this.props
+    const {defaul} = this.props
 
-    const data2=defaul.react
+    // const data2=defaul.react
     const data3=defaul
 
 
      
     return (
       <div key={Date.now()}>
-      {Object.keys(data3).map((e,ind)=>{
-        { 
+      {Object.keys(data3).map((e,ind)=>{ 
           console.log(e, ind)
-          ztemp=e
-        }
+          // let ztemp=e
 
       return(
 
@@ -558,7 +501,7 @@ export function mapStateToProps(state, ownProps, dispatch) {
     defa[c]=[]
     for(var i in posts){
       for(var o in comments){
-        if(comments[o][1]==i){
+        if(comments[o][1]===i){
               expands.push({id:comments[o][0],
                   parentId:comments[o][1],
                   timestamp:getFormattedDate(comments[o][2]),
@@ -573,7 +516,7 @@ export function mapStateToProps(state, ownProps, dispatch) {
       }
      
 
-      if(c==posts[i][6] && posts[i][7]==false){
+      if(c===posts[i][6] && posts[i][7]===false){
         defa[c].push({
           id:posts[i][0],
           timestamp:getFormattedDate(posts[i][1]),
@@ -592,8 +535,8 @@ export function mapStateToProps(state, ownProps, dispatch) {
   }
 
   var sortable=[]
-  for(var p in posts){
-    sortable.push([p, posts[p][0], posts[p][1], posts[p][2], posts[p][3]])
+  for(var pp in posts){
+    sortable.push([pp, posts[pp][0], posts[pp][1], posts[pp][2], posts[pp][3]])
   }
   return {
     categories,
