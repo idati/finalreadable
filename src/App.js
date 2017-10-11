@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import { Route, withRouter} from 'react-router-dom';
 import { getAllCategory, getAllPosts, getCommente, createNewComment, upVotePost, upVoteComment, downVotePost, downVoteComment } from './actions/index'
 import * as api from './api/index'
 import 'react-table/react-table.css'
+import PostDetail from './PostDetail';
 import {BootstrapTable, TableHeaderColumn, ButtonGroup} from 'react-bootstrap-table'
 
 var identifier = require('identifier');
  
 
  
-function onSelectAll(isSelected) {
-  console.log(`is select all: ${isSelected}`);
-}
 
 function onAfterSaveCell(row, cellName, cellValue) {
-  console.log(`Save cell ${cellName} with value ${cellValue}`);
-  // console.log('The whole row :');
-  // console.log(row);
   api.editPost(row.id, row.title, row.body)
 }
 
@@ -80,10 +75,8 @@ function nameValidator(value) {
   return true;
 }
 
-function getFormattedDate(_date) {
-
+export function getFormattedDate(_date) {
     var date = new Date(_date)
-
     var month = date.getMonth() + 1;
     var day = date.getDate();
     var hour = date.getHours();
@@ -98,8 +91,6 @@ function getFormattedDate(_date) {
 
     var str = date.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
 
-    /*alert(str);*/
-    console.log('newTime',str)
     return str;
 }
 
@@ -108,8 +99,6 @@ function getFormattedDate(_date) {
 
 //--------------------------------------STARTEX---------------------------------------------------/
 function onAfterSaveCellEx(row, cellName, cellValue) {
-  console.log(`Save cell ${cellName} with value ${cellValue}`);
-  console.log('The whole row :');
   api.editComment(row.id, row.timestamp, row.body)
 }
 
@@ -119,46 +108,45 @@ const cellEditPropEx= {
   afterSaveCell: onAfterSaveCellEx
 }
 
-
-function onSelectAllEx(isSelected) {
-  console.log(`is select all: ${isSelected}`);
-  return(true)
-}
-
-
 function onAfterTableCompleteEx() {
   console.log('Table render complete.');
 }
 
 function onAfterDeleteRowEx(rowKeys) {
-  console.log('onAfterDeleteRow');
-  console.log('deletet',rowKeys);
   for (var i in rowKeys){
       api.deleteComment(rowKeys[i])
   }
 }
 
 function onAfterInsertRowEx(row) {
-  console.log('onAfterInsertRow');
   api.newComment(row.id, row.timestamp, row.body, row.author, row.parentId)
 }
-//---------------------------------------START----------------------------------------------------/
+
 export class BSTable extends Component {
     constructor(props, context){
       super(props);
       this.state = {
-        selectedRows: []
+        selectedRowsC: []
     }
 
   };
+
+
+  onSelectAllEx = (isSelected) => {
+   console.log(`is select all: ${isSelected}`);
+     this.setState({
+      selectedRowsC: []
+    })
+  }
 
   
   onRowSelectEx = ({id}, isSelected) => {
     console.log(`selected: ${isSelected}`);
     this.setState({
-      selectedRows: [...this.state.selectedRows, id]
+      selectedRowsC: [id]
     })
   }
+
 
   forceUpdateHandler(){
     this.forceUpdate();
@@ -170,15 +158,15 @@ export class BSTable extends Component {
         { props.showSelectedOnlyBtn }
         { props.exportCSVBtn }
         { props.insertBtn }
-        { props.deleteBtn }
+        { props.deleteBtn }       
         <button type='button'
          className={ `btn btn-primary` }
-          onClick={() => this.props.upVoteComment(this.state.selectedRows[0])}>
+          onClick={() => this.props.upVoteComment(this.state.selectedRowsC[0])}>
          upVote
         </button>
         <button type='button'
          className={ `btn btn-primary` }
-         onClick={() => this.props.downVoteComment(this.state.selectedRows[0])}>
+         onClick={() => this.props.downVoteComment(this.state.selectedRowsC[0])}>
          downVote
         </button>
 
@@ -190,7 +178,6 @@ export class BSTable extends Component {
   }
 
   render() {
-
     const optionsEx = {
       paginationShowsTotal: true,
       sortName: 'timestamp',  // default sort column name
@@ -199,7 +186,6 @@ export class BSTable extends Component {
       afterDeleteRow: onAfterDeleteRowEx,  // A hook for after droping rows.
       afterInsertRow: onAfterInsertRowEx,   // A hook for after insert rows
       btnGroup: this.createCustomButtonGroup,
-      // btnGroup: this.createCustomButtonGroup,
       expanding: this.expanding,    //<<<< should be this.state.expanding ?
       expandRowBgColor: 'rgb(242,255,163)'
     };
@@ -208,19 +194,15 @@ export class BSTable extends Component {
       mode: 'checkbox',
       clickToSelect: true,
       clickToExpand: true,
-      // selected: [], // default select on table
       bgColor: 'rgb(238, 193, 213)',
       onSelect: this.onRowSelectEx,
-      onSelectAll: onSelectAllEx,
-      selected: this.state.selectedRows,
-      // all: this
+      onSelectAll: this.onSelectAllEx,
+      selected: this.state.selectedRowsC,
     };
  
     if (this.props.data) {
-      // {this.forceUpdateHandler}
 
       return (
-
         <div className="container" key={1}>Comments
         <BootstrapTable 
           data={ this.props.data[0] }
@@ -236,8 +218,8 @@ export class BSTable extends Component {
           <TableHeaderColumn dataField='parentId' autoValue={getParentId(this.props.data[1])} dataSort={true} hidden={true}>ParentId</TableHeaderColumn>
           <TableHeaderColumn dataField='body' dataSort={true}>Body</TableHeaderColumn>
           <TableHeaderColumn dataField='author' dataSort={true}>Author</TableHeaderColumn>
-          <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort>Vote Score</TableHeaderColumn>
-          <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort={true}>Timestamp</TableHeaderColumn>
+          <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort editable={false}>Vote Score</TableHeaderColumn>
+          <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort={true} editable={false}>Timestamp</TableHeaderColumn>
         </BootstrapTable>
         </div>)
     } else {
@@ -246,32 +228,57 @@ export class BSTable extends Component {
   }
 }
 
-//---------------------------------------THE END------------------------------------------------/
-// #export class App extends Component {
+
+
+const About = () => (
+  <div>
+    <h2>About</h2>
+  </div>
+)
 
 
 export class App extends Component {
   getSelectedRowKeys() {
-    console.log(this)
+    console.log('Thi?',this)
   }
 
    constructor(props, context){
     super(props);
     this.state = {
-      selectedRows: []
+      selectedRows: [],
+      showComponent: false,
+      cat:[]
     }
+
+    this._onButtonClick = this._onButtonClick.bind(this)
 
   };
 
+   _onButtonClick() {
+    window.location.assign(`/${this.state.cat[0]}/${this.state.selectedRows[0]}`)
+    this.setState({showComponent: true});
+    }
 
-onRowSelect = ({id}, isSelected) => {
 
-  console.log(`selected: ${isSelected}`);
-
+  onSelectAll = (isSelected) => {
+  console.log(`is select all: ${isSelected}`);
     this.setState({
-      selectedRows: [...this.props.selectedRows, id]
+      selectedRows: []
     })
 
+}
+
+onRowSelect = ({id}, isSelected) => {
+    for(let p=0;p<this.props.post.length;p++){
+      if(id===this.props.post[p].id){
+        this.setState({cat:[this.props.post[p].category]})
+      }
+    }
+
+    this.props.selectedRows.push(id)
+    this.setState({
+      selectedRows: [id]
+    })
 }
 
   
@@ -300,8 +307,6 @@ onRowSelect = ({id}, isSelected) => {
     }
 
 
-  
-
 }
 
   isExpandableRow(row) {
@@ -320,9 +325,9 @@ onRowSelect = ({id}, isSelected) => {
    const zu=[]
    result.then((a)=>zu.push(a))
     if(row.expand){
-    return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} downVoteComment={this.props.downVoteComment} data={ [row.expand.filter((a)=> a.parentId===row.id), row.id] } />);//[row.expand, row.id] } />);
+    return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} selectedRowsC={[]} downVoteComment={this.props.downVoteComment} data={ [row.expand.filter((a)=> a.parentId===row.id), row.id] } />);//[row.expand, row.id] } />);
     } else {
-      return (<BSTable post={row.id} data={ [[], row.id] } />);
+      return (<BSTable post={row.id} upVoteComment={this.props.upVoteComment} selectedRowsC={[]} downVoteComment={this.props.downVoteComment} data={ [[], row.id] } />);
     }
 
   }
@@ -336,6 +341,11 @@ onRowSelect = ({id}, isSelected) => {
         { props.exportCSVBtn }
         { props.insertBtn }
         { props.deleteBtn }
+        <button type='button'
+         className={ `btn btn-primary` }
+         onClick={() => this._onButtonClick()}>
+         showDetails
+        </button> 
         <button type='button'
          className={ `btn btn-primary` }
           onClick={() => this.props.upVote(this.state.selectedRows[0])}>
@@ -352,6 +362,8 @@ onRowSelect = ({id}, isSelected) => {
   }
 
 
+
+
   render() {
 
     const options = {
@@ -362,12 +374,9 @@ onRowSelect = ({id}, isSelected) => {
       afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
       afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
       afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
-      // getrow: getrow,
       btnGroup: this.createCustomButtonGroup,
-      //expanding: this.expanding,    //<<<< should be this.state.expanding ?
       expandRowBgColor: 'rgb(242,255,163)',
       expandBy: 'column',
-      // selectRowProp: selectRowProp,
     };
 
     
@@ -376,39 +385,36 @@ onRowSelect = ({id}, isSelected) => {
     mode: 'checkbox',
     clickToSelect: true,
     clickToExpand: true,
-    // selected: [], // default select on table
     bgColor: 'rgb(238, 193, 213)',
-    // onSelect: onRowSelect,
-    onSelectAll: onSelectAll, 
+    onSelectAll: this.onSelectAll, 
     onSelect: this.onRowSelect,
     selected: this.state.selectedRows
-    // unselectable:this.state.selectedRows
-    // all:this
   };
 
  
  
     const {defaul} = this.props
 
-    // const data2=defaul.react
     const data3=defaul
+    const mat = {path: "/:category", url: "/react", isExact: true, params: {category: "react"}}
 
+    const MyPostDetail = (props) => {
+      return (
+        <PostDetail 
+          id={this.state.selectedRows[0]}
+          pro={this.props}
+          match={mat}
+        />
+      );
+    }
 
-     
-    return (
-      <div key={Date.now()}>
+    const Home = () => (
+         <div key={Date.now()}>
       {Object.keys(data3).map((e,ind)=>{ 
-          console.log(e, ind)
-          // let ztemp=e
-
       return(
-
       <div className="container" key={ind}><h1>{e}</h1>
-
       <BootstrapTable 
         data={data3[e]}
-        // data={products} 
-        //keyField='id'  
         options={ options }   
         expandableRow={ this.isExpandableRow }
         expandComponent={ this.expandComponent }
@@ -425,21 +431,28 @@ onRowSelect = ({id}, isSelected) => {
         <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Title</TableHeaderColumn>
         <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Body</TableHeaderColumn>
         <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Author</TableHeaderColumn>
-        <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false }>Vote Score</TableHeaderColumn>
-        <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false }>Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false } editable={false}>Vote Score</TableHeaderColumn>
+        <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
         <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
         <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
       </BootstrapTable><hr width="110%"/>
-
       </div>
       )
       })}
       </div>
       )
+
+     
+    return (
+      <div className="App">
+      <Route path='/about' component={About}/>
+      <Route exact path='/' component={Home}/>
+      <Route path={this.state.selectedRows[0]} component={MyPostDetail}/>
+      </div>
+      )
   }
 }
 export function mapDispatchToProps(dispatch) {
-  console.log('dispatch',dispatch)
 
   return {
     posts: dispatch(getAllPosts()),
@@ -479,7 +492,14 @@ export function mapStateToProps(state, ownProps, dispatch) {
   var zu=[]
   var getpost=[]
   for(var p in posts){
-    getpost.push({id: posts[p][0]})
+    getpost.push({id: posts[p][0],
+                  timestamp: posts[p][1],
+                  title: posts[p][2],
+                  body: posts[p][3],
+                  author: posts[p][4],
+                  voteScore: posts[p][5],
+                  category: posts[p][6]
+                })
 
   api.getAllCommentsFromPost(posts[p][0]).then((a)=> zu.push(a))
   }
@@ -550,4 +570,7 @@ export function mapStateToProps(state, ownProps, dispatch) {
   }
 }
  
+
+
+
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

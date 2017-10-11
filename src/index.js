@@ -2,20 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-// import BSTable from './BSTable';
 import registerServiceWorker from './registerServiceWorker';
-
 import {createStore, applyMiddleware, compose} from 'redux'
 import {Provider} from 'react-redux'
 import thunk from 'redux-thunk';
 import reducer from './reducer'
-import {BrowserRouter} from 'react-router-dom'
-// import CategoryView from './components/CategoryView'
-// import { Table, reducer as tableReducer, middleware } from 'redux-data-table';
-
-// import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
-// import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
-// import "../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.js"
+import {BrowserRouter as Router} from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
@@ -30,36 +22,18 @@ const logger = store => next => action => {
   return result
 }
 
-// const reducer2 = combineReducers({reducer,
-//   tables: tableReducer,
-// });
-
 const store = createStore(reducer,
   composeEnhancers(
-    // applyMiddleware(logger, thunk, middleware)
     applyMiddleware(logger, thunk)
   ))
 
 
 ReactDOM.render(
-
   <Provider store={store}>
-    <BrowserRouter>
+    <Router>
       <App />
-    </BrowserRouter>
+    </Router>
   </Provider>  
-
-
   , document.getElementById('root'));
 
-// ReactDOM.render(
-
-//   <Provider store={store}>
-//     <BrowserRouter>
-//       <BSTable />
-//     </BrowserRouter>
-//   </Provider>  
-
-
-//   , document.getElementById('root'));
 registerServiceWorker();

@@ -24,4 +24,35 @@
   to { transform: rotate(360deg); }
 }
 
+
+.post-title {
+  display: inline-block;
+  font-size: 18px;
+}
+
+.post-author {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 12px;
+}
+
+.post-date {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 12px;
+}
+
+.post-body {
+  margin-bottom: 32px;
+  border-bottom: 1px solid #000;
+  padding-bottom: 18px;
+}
+
+.comment-body {
+  margin: 14px 0 12px 0;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 14px;
+}
+
+
 .col-hidden { display: none }
