@@ -1,7 +1,10 @@
 
-Inline-style: 
-![alt text]( HowToDo.gif "Logo Title Text 1")
-
+How to insert/vote new Posts and Comments: 
+![alt text]( HowToDo.gif "new/vote")
+How to edit Post and Commentar:
+![alt text]( HowToDo2.gif "edit")
+How to sort/search in Posts and Comments
+![alt text]( HowToDo3.gif "sort/search")
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
