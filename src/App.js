@@ -255,7 +255,9 @@ export class App extends Component {
   };
 
    _onButtonClick() {
+    if(this.state.cat[0]!=undefined){
     window.location.assign(`/${this.state.cat[0]}/${this.state.selectedRows[0]}`)
+    }
     this.setState({showComponent: true});
     }
 
@@ -435,19 +437,21 @@ onRowSelect = ({id}, isSelected) => {
         <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
         <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
         <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
-      </BootstrapTable><hr width="110%"/>
+      </BootstrapTable><hr width="100%"/>
       </div>
       )
       })}
       </div>
       )
-
+    
+  
+      
      
     return (
       <div className="App">
       <Route path='/about' component={About}/>
       <Route exact path='/' component={Home}/>
-      <Route path={this.state.selectedRows[0]} component={MyPostDetail}/>
+      <Route exact path={this.state.cat[0]} component={MyPostDetail}/>
       </div>
       )
   }
