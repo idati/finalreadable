@@ -1,5 +1,5 @@
 
-## The next lines show you this Tool works:
+## The next lines show you how this Tool works:
 
 How to insert/vote new Posts and Comments: 
 ![alt text]( HowToDo.gif "new/vote")
