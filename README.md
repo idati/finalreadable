@@ -1,8 +1,12 @@
 
+## The next lines show you this Tool works:
+
 How to insert/vote new Posts and Comments: 
 ![alt text]( HowToDo.gif "new/vote")
+
 How to edit Post and Commentar:
 ![alt text]( HowToDo2.gif "edit")
+
 How to sort/search in Posts and Comments
 ![alt text]( HowToDo3.gif "sort/search")
 
