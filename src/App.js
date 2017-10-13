@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
-import { Route, withRouter} from 'react-router-dom';
+import { Route, withRouter, Link} from 'react-router-dom';
 import { getAllCategory, getAllPosts, getCommente, createNewComment, upVotePost, upVoteComment, downVotePost, downVoteComment } from './actions/index'
 import * as api from './api/index'
 import 'react-table/react-table.css'
@@ -255,7 +255,7 @@ export class App extends Component {
   };
 
    _onButtonClick() {
-    if(this.state.cat[0]!=undefined){
+    if(this.state.cat[0]!==undefined){
     window.location.assign(`/${this.state.cat[0]}/${this.state.selectedRows[0]}`)
     }
     this.setState({showComponent: true});
@@ -398,6 +398,11 @@ onRowSelect = ({id}, isSelected) => {
     const {defaul} = this.props
 
     const data3=defaul
+    console.log('data3',data3)
+    const data_react={react: defaul['react']}
+    const data_redux={redux: defaul['redux']}
+    const data_udacity={udacity: defaul['udacity']}
+ 
     const mat = {path: "/:category", url: "/react", isExact: true, params: {category: "react"}}
 
     const MyPostDetail = (props) => {
@@ -411,10 +416,46 @@ onRowSelect = ({id}, isSelected) => {
     }
 
     const Home = () => (
-         <div key={Date.now()}>
+         <div key={Date.now()}><pre><center><h1>Overview</h1></center></pre>
       {Object.keys(data3).map((e,ind)=>{ 
       return(
-      <div className="container" key={ind}><h1>{e}</h1>
+      <div className="container" key={ind}><Link to={e}><h1>{e}</h1></Link>
+      <BootstrapTable 
+        data={data3[e]}
+        options={ options }   
+        expandableRow={ this.isExpandableRow }
+        expandComponent={ this.expandComponent }
+        expandColumnOptions={ { expandColumnVisible: true, expandColumnBeforeSelectColumn: false } }
+        selectRow={ selectRowProp }
+        search 
+        insertRow 
+        deleteRow 
+        hover 
+        pagination ={true}
+        cellEdit={ cellEditProp } 
+        >
+        <TableHeaderColumn dataField='id' autoValue={getid} dataSort isKey hidden={true}>Id</TableHeaderColumn>
+        <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Body</TableHeaderColumn>
+        <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Author</TableHeaderColumn>
+        <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false } editable={false}>Vote Score</TableHeaderColumn>
+        <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
+        <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
+      </BootstrapTable><hr width="100%"/>
+      </div>
+      )
+      })}
+      </div>
+      )
+
+
+
+      const react = () => (
+         <div key={Date.now()}>
+      {Object.keys(data_react).map((e,ind)=>{ 
+      return(
+      <div className="container" key={ind}><pre><h1>{e}&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;<Link to='/'>back</Link></h1></pre>
       <BootstrapTable 
         data={data3[e]}
         options={ options }   
@@ -444,6 +485,75 @@ onRowSelect = ({id}, isSelected) => {
       </div>
       )
     
+
+          const redux = () => (
+         <div key={Date.now()}>
+      {Object.keys(data_redux).map((e,ind)=>{ 
+      return(
+      <div className="container" key={ind}><pre><h1>{e}&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;<Link to='/'>back</Link></h1></pre>
+      <BootstrapTable 
+        data={data3[e]}
+        options={ options }   
+        expandableRow={ this.isExpandableRow }
+        expandComponent={ this.expandComponent }
+        expandColumnOptions={ { expandColumnVisible: true, expandColumnBeforeSelectColumn: false } }
+        selectRow={ selectRowProp }
+        search 
+        insertRow 
+        deleteRow 
+        hover 
+        pagination ={true}
+        cellEdit={ cellEditProp } 
+        >
+        <TableHeaderColumn dataField='id' autoValue={getid} dataSort isKey hidden={true}>Id</TableHeaderColumn>
+        <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Body</TableHeaderColumn>
+        <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Author</TableHeaderColumn>
+        <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false } editable={false}>Vote Score</TableHeaderColumn>
+        <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
+        <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
+      </BootstrapTable><hr width="100%"/>
+      </div>
+      )
+      })}
+      </div>
+      )
+
+
+            const udacity = () => (
+         <div key={Date.now()}>
+      {Object.keys(data_udacity).map((e,ind)=>{ 
+      return(
+      <div className="container" key={ind}><pre><h1>{e}&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;&#9;<Link to='/'>back</Link></h1></pre>
+      <BootstrapTable 
+        data={data3[e]}
+        options={ options }   
+        expandableRow={ this.isExpandableRow }
+        expandComponent={ this.expandComponent }
+        expandColumnOptions={ { expandColumnVisible: true, expandColumnBeforeSelectColumn: false } }
+        selectRow={ selectRowProp }
+        search 
+        insertRow 
+        deleteRow 
+        hover 
+        pagination ={true}
+        cellEdit={ cellEditProp } 
+        >
+        <TableHeaderColumn dataField='id' autoValue={getid} dataSort isKey hidden={true}>Id</TableHeaderColumn>
+        <TableHeaderColumn dataField='title' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Title</TableHeaderColumn>
+        <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Body</TableHeaderColumn>
+        <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Author</TableHeaderColumn>
+        <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false } editable={false}>Vote Score</TableHeaderColumn>
+        <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
+        <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
+        <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
+      </BootstrapTable><hr width="100%"/>
+      </div>
+      )
+      })}
+      </div>
+      )
   
       
      
@@ -451,6 +561,9 @@ onRowSelect = ({id}, isSelected) => {
       <div className="App">
       <Route path='/about' component={About}/>
       <Route exact path='/' component={Home}/>
+      <Route exact path='/react' component={react}/>
+      <Route exact path='/redux' component={redux}/>
+      <Route exact path='/udacity' component={udacity}/>
       <Route exact path={this.state.cat[0]} component={MyPostDetail}/>
       </div>
       )
