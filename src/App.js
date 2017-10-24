@@ -373,7 +373,7 @@ onRowSelect = ({id}, isSelected) => {
 
 
   render() {
-    console.log('thi?',this)
+
 
     const options = {
       all: this,
@@ -667,22 +667,13 @@ export function mapStateToProps(state, ownProps, dispatch) {
      // commnum=expands.filter((a)=> a.parentId===posts[i][0]).length
      // api.getAllCommentsFromPost(posts[i][0]).then((a)=> commnum.push(a))
 
-     // for(var q in comments){
-     //  console.log('ausgabe', posts[i][0], comments[q][1].parentId)
-     //  if(posts[i][0]===comments[q][1].parentId){
-     //    commnum+=1
-     //  }
-     // }
 
-
-      // console.log('Ausgabe', expands)
      for(var q in expands){
       if(posts[i][0] === expands[q].parentId){
         if(!(expands[q].id in comcont)){
           comcont.push(expands[q].id)
         }
-        // commnum+=1
-        // console.log('Ausgabe', expands[q].parentId)
+
       }
      }
       commnum=comcont.length
