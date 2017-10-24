@@ -38,6 +38,10 @@ function getid(){
 export function getvote(){
   return (1)
 }
+
+export function getcommnum(){
+  return(0)
+}
  
 function gettime(){
   return(Date.now())
@@ -64,6 +68,7 @@ function onAfterDeleteRow(rowKeys) {
 
 function onAfterInsertRow(row) {
   api.newPost(row.id, row.timestamp, row.title, row.body, row.author, row.category)
+  window.location.reload()
 }
  
 function nameValidator(value) {
@@ -120,6 +125,7 @@ function onAfterDeleteRowEx(rowKeys) {
 
 function onAfterInsertRowEx(row) {
   api.newComment(row.id, row.timestamp, row.body, row.author, row.parentId)
+  window.location.reload()
 }
 
 export class BSTable extends Component {
@@ -367,6 +373,7 @@ onRowSelect = ({id}, isSelected) => {
 
 
   render() {
+    console.log('thi?',this)
 
     const options = {
       all: this,
@@ -439,10 +446,11 @@ onRowSelect = ({id}, isSelected) => {
         <TableHeaderColumn dataField='body' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Body</TableHeaderColumn>
         <TableHeaderColumn dataField='author' dataSort editable={ { type: 'textarea' , validator: nameValidator } } expandable={ false }>Author</TableHeaderColumn>
         <TableHeaderColumn dataField='voteScore' autoValue={getvote} dataSort expandable={ false } editable={false}>Vote Score</TableHeaderColumn>
+        <TableHeaderColumn dataField='commnum' autoValue={getcommnum} dataSort expandable={ false } editable={false}>Num Comments</TableHeaderColumn>
         <TableHeaderColumn dataField='timestamp' autoValue={gettime} dataSort expandable={ false } editable={false}>Timestamp</TableHeaderColumn>
         <TableHeaderColumn dataField='deleted' autoValue={getstatus} dataSort hidden={true} expandable={ false }>Deleted</TableHeaderColumn>
         <TableHeaderColumn dataField='category' autoValue={getcats(e)} dataSort hidden={true} expandable={ false }>Category</TableHeaderColumn>
-      </BootstrapTable><hr width="100%"/>
+      </BootstrapTable><hr width="110%"/>
       </div>
       )
       })}
@@ -607,6 +615,8 @@ export function mapStateToProps(state, ownProps, dispatch) {
 
 
   var zu=[]
+  var commnum=0
+  var comcont=[]
   var getpost=[]
   for(var p in posts){
     getpost.push({id: posts[p][0],
@@ -631,6 +641,7 @@ export function mapStateToProps(state, ownProps, dispatch) {
               deleted:comments[z][y].deleted,
               parentDeleted:comments[z][y].parentDeleted,
     })
+
     }
   }
   var defa = {}
@@ -648,10 +659,35 @@ export function mapStateToProps(state, ownProps, dispatch) {
                   deleted:comments[o][6],
                   parentDeleted:comments[o][7],
             })
+
         }
       // }
       }
-     
+
+     // commnum=expands.filter((a)=> a.parentId===posts[i][0]).length
+     // api.getAllCommentsFromPost(posts[i][0]).then((a)=> commnum.push(a))
+
+     // for(var q in comments){
+     //  console.log('ausgabe', posts[i][0], comments[q][1].parentId)
+     //  if(posts[i][0]===comments[q][1].parentId){
+     //    commnum+=1
+     //  }
+     // }
+
+
+      // console.log('Ausgabe', expands)
+     for(var q in expands){
+      if(posts[i][0] === expands[q].parentId){
+        if(!(expands[q].id in comcont)){
+          comcont.push(expands[q].id)
+        }
+        // commnum+=1
+        // console.log('Ausgabe', expands[q].parentId)
+      }
+     }
+      commnum=comcont.length
+      comcont=[]
+
 
       if(c===posts[i][6] && posts[i][7]===false){
         defa[c].push({
@@ -663,10 +699,11 @@ export function mapStateToProps(state, ownProps, dispatch) {
           voteScore:posts[i][5],
           category:posts[i][6],
           deleted:posts[i][7],
+          commnum:commnum,
           expand: expands
       })
+         commnum=0
     }
-
 
   }
   }
